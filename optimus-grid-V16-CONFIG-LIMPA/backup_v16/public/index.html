@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Optimus V16 - Config Limpa</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#050505;color:#00FF41;font-family:'Courier New',monospace;height:100vh;display:flex;flex-direction:column;overflow:hidden;font-size:13px}
+.header-fixed{text-align:center;padding:12px;border-bottom:1px solid #00F0FF;background:#050505;display:flex;flex-direction:column;align-items:center;gap:8px}
+.header-fixed h1{color:#00F0FF;font-size:15px}
+.header-buttons{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.main{flex:1;display:flex;gap:10px;padding:10px;overflow:hidden}
+.panel{flex:1;border:1px solid #FF073A;border-radius:8px;display:flex;flex-direction:column;overflow:hidden}
+.panel.premium{border-color:#00FF41}
+.panel-title{padding:10px;color:#FF073A;font-size:11px;display:flex;justify-content:space-between}
+.panel.premium .panel-title{color:#00FF41}
+.scroll{flex:1;overflow-y:auto;padding:8px}
+.signal{border:1px solid rgba(0,255,65,0.2);margin-bottom:8px;padding:8px;border-radius:6px;background:rgba(0,0,0,0.25);font-size:11px}
+.grid-box{background:rgba(0,255,65,0.06);border:1px dashed rgba(0,255,65,0.35);padding:6px;margin-top:5px;border-radius:4px;font-size:10px;color:#c8ffc8;line-height:1.6}
+.logs-wrap{height:52vh;margin:0 10px 10px 10px;border:1px solid #00F0FF;border-radius:8px;display:flex;flex-direction:column;overflow:hidden}
+.noticia-bar{background:rgba(255,235,59,0.15);border-bottom:1px solid #FFEB3B;padding:8px 12px;color:#FFEB3B;font-size:11px;display:none;font-weight:bold;white-space:pre-wrap}
+.optimus-fixed{background:rgba(0,240,255,0.1);border-bottom:2px solid #00F0FF;padding:10px;color:#00F0FF;font-size:11px;white-space:pre-wrap;max-height:55%;overflow-y:auto}
+.top5-box{background:rgba(0,255,65,0.08);border-bottom:1px solid #00FF41;padding:10px;color:#00FF41;font-size:11px;white-space:pre-wrap;display:none;max-height:45%;overflow-y:auto}
+.logs{flex:1;overflow-y:auto;padding:8px;font-size:10px;color:#888;background:rgba(0,0,0,0.3);white-space:pre-wrap}
+.controls{display:flex;gap:8px;padding:10px;border-top:1px solid rgba(0,240,255,0.3);background:rgba(0,0,0,0.5)}
+button{background:transparent;border:1px solid #00F0FF;color:#00F0FF;padding:8px 14px;cursor:pointer;border-radius:5px;font-family:monospace;font-size:10px}
+button.grid{border-color:#00FF41;color:#00FF41} button.confirmar{border-color:#00F0FF;color:#00F0FF;background:rgba(0,240,255,0.1);font-weight:bold} button.top5btn{border-color:#FFEB3B;color:#FFEB3B} button.stop{border-color:#FF073A;color:#FF073A}
+.chk{accent-color:#00FF41;margin-right:6px}
+.tag{font-size:9px;padding:2px 6px;border-radius:3px;margin-left:5px} .tag-open{background:#00FF41;color:#000} .tag-new{background:#FF073A;color:#fff} .tag-padrao{background:#00F0FF;color:#000;font-weight:bold}
+.entradas-list{display:flex;gap:6px;flex-wrap:wrap;margin-left:10px}
+.entrada-tag{background:rgba(0,255,65,0.2);border:1px solid #00FF41;color:#00FF41;padding:3px 8px;border-radius:12px;font-size:9px;display:flex;align-items:center;gap:4px}
+.entrada-tag button{background:none;border:none;color:#FF073A;padding:0 2px;font-size:12px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="header-fixed">
+<h1>OPTIMUS V16 - CONFIG LIMPA - 1 BARRA NOTÍCIA 30s + PROBABILIDADE 1-3H</h1>
+<div class="header-buttons">
+<button id="btnScan" class="grid">INICIAR SCAN</button>
+<button id="btnStop" class="stop">STOP</button>
+<button id="btnTop5" class="top5btn">TOP 5</button>
+<span id="fase" style="color:#00F0FF;font-size:9px">Pronto - V16 - 1 barra notícia 30s loop</span>
+<div class="entradas-list" id="entradasList"></div>
+</div>
+</div>
+<div class="main">
+<div class="panel"><div class="panel-title">POSSÍVEIS - %ord 0.45-0.85% travado</div><div id="possiveis" class="scroll"></div></div>
+<div class="panel premium"><div class="panel-title">PREMIUM - config detalhada + probabilidade 1-3h<input type="text" id="searchPremium" placeholder="Buscar" style="background:transparent;border:1px solid #00FF41;color:#00FF41;padding:4px 8px;border-radius:4px;font-family:monospace;font-size:9px;width:80px"></div><div id="premium" class="scroll"></div></div>
+</div>
+<div class="logs-wrap">
+<div id="noticiaBar" class="noticia-bar"></div>
+<div id="optimus" class="optimus-fixed">[OPTIMUS V16] Pronto! 1 barra amarela só pra notícias 30s loop sem parar + barra azul só TOP5. Premium só configuração detalhada + probabilidade 1-3h baseada nas últimas 6h. Volatilidade baixa quase não abre ordem, muito alta estoura grid.</div>
+<div id="top5Box" class="top5-box"></div>
+<div id="logs" class="logs"></div>
+<div class="controls">
+<button id="btnConfirmar" class="confirmar">CONFIRMAR ENTRADA - GUARDIÃO 10min</button>
+<span id="stats" style="font-size:9px;color:#777"></span>
+<span style="margin-left:auto;color:#00F0FF;font-size:8px">Guardião: <span id="guardiaoCount">0</span> | V16 | 1 barra notícia</span>
+</div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket=io();
+let scanning=false;
+const possiveisDiv=document.getElementById('possiveis');
+const premiumDiv=document.getElementById('premium');
+const logsDiv=document.getElementById('logs');
+const optimusDiv=document.getElementById('optimus');
+const noticiaBar=document.getElementById('noticiaBar');
+const top5Box=document.getElementById('top5Box');
+const entradasList=document.getElementById('entradasList');
+const searchPremium=document.getElementById('searchPremium');
+let allPremium=[];
+function addLog(d){const div=document.createElement('div');div.style.color=d.type==='prime'?'#00FF41':d.type==='warn'?'#FF9800':d.type==='skip'?'#666':d.type==='scan'?'#00F0FF':'#00FF41';div.textContent=`[${d.time}] ${d.msg}`;logsDiv.prepend(div);if(logsDiv.children.length>250)logsDiv.lastChild.remove();}
+function renderPremium(){
+ const filter=searchPremium.value.toUpperCase();
+ premiumDiv.innerHTML='';
+ const list=filter?allPremium.filter(s=>s.symbol.includes(filter)):allPremium;
+ list.slice(0,80).forEach(d=>{
+   const div=document.createElement('div');div.className='signal prime';
+   const probTxt=d.probFechamento?d.probFechamento.probabilidadeTexto:`${d.fechamentos} ordens`;
+   div.innerHTML=`<div><input type="checkbox" class="chk premium-check" value="${d.symbol}"><b>${d.symbol}</b> <span style="color:#00FF41;font-weight:bold">${d.score.toFixed(0)}% ${d.tipo}</span> <span class="tag tag-padrao">${d.nomePadrao}</span> <span class="tag ${d.isOpen?'tag-open':'tag-new'}">${d.isOpen?'VIGIANDO':'NOVO'}</span></div>
+    <div class="grid-box">
+     <b>Configuração detalhada:</b><br>
+     • Entrada: <b>${d.lowerFmt}</b> até <b>${d.upperFmt}</b><br>
+     • Grids: <b>${d.grids}</b> | % entre ordens: <b>${d.pctOrdens.toFixed(2)}%</b> (seguro 0.45-0.85%)<br>
+     • Alavancagem: ideal <b>${d.levIdeal}x</b> mínima <b>${d.levMin}x</b> | Faixa: <b>${d.rangePct.toFixed(2)}%</b><br>
+     • Duração: <b>${d.duracao_estimada}</b> | Score: ${d.score.toFixed(0)}% Prob: ${d.prob.toFixed(0)}%<br>
+     • Probabilidade: <b>${probTxt}</b><br>
+     • Simulação 6h: ${d.simulacao?d.simulacao.motivo:'OK'}<br>
+     • Histórico: ${d.nomePadrao} apareceu <b>${d.repeticoes_24h}x</b> em 24h em <b>${d.paresDiferentes} pares</b>, média <b>${d.fechamentoMedio?d.fechamentoMedio.toFixed(0):d.fechamentos} ordens</b><br>
+     • Comportamento: ${d.comportamentoId} ${d.isNovoComportamento?'(NOVO)':'(repetição)'}
+    </div>`;
+   premiumDiv.appendChild(div);
+ });
+}
+socket.on('log',addLog);
+socket.on('log_history',list=>{logsDiv.innerHTML='';list.reverse().forEach(d=>addLog({msg:d.mensagem,type:d.type,time:new Date(d.timestamp).toLocaleTimeString('pt-BR')}));});
+socket.on('optimus',payload=>{optimusDiv.textContent=typeof payload==='string'?payload:payload.text;});
+socket.on('optimus_noticia',payload=>{noticiaBar.style.display='block';noticiaBar.textContent=`📰 ${payload.text}`;});
+socket.on('scan_status',s=>{document.getElementById('fase').textContent=s.active?s.fase:'Pronto - V16';scanning=s.active;document.getElementById('btnScan').textContent=s.active?'PARANDO...':'INICIAR SCAN';});
+socket.on('stats',s=>{document.getElementById('stats').textContent=`Premium: ${s.totalPremiums} | Comport: ${s.totalComportamentos||0} | Novos: ${s.comportamentoNovo||0} repet: ${s.comportamentoExistente||0}`;});
+socket.on('possivel',d=>{const div=document.createElement('div');div.className='signal';div.innerHTML=`<b>${d.symbol}</b> ${d.score.toFixed(0)}% | ${d.grids}G | %ord ${d.pctOrdens.toFixed(2)}%`;possiveisDiv.prepend(div);if(possiveisDiv.children.length>60)possiveisDiv.lastChild.remove();});
+socket.on('premium',d=>{let idx=allPremium.findIndex(s=>s.symbol===d.symbol);if(idx>=0)allPremium.splice(idx,1);allPremium.unshift(d);if(allPremium.length>150)allPremium.pop();renderPremium();});
+socket.on('premiums_history',list=>{allPremium=list;renderPremium();});
+socket.on('entradas_history',list=>{entradasList.innerHTML='';document.getElementById('guardiaoCount').textContent=list.length;list.forEach(e=>{const tag=document.createElement('div');tag.className='entrada-tag';tag.innerHTML=`${e.symbol} ${e.grids}G ${e.levIdeal}x <button onclick="remover('${e.symbol}')">×</button>`;entradasList.appendChild(tag);});});
+socket.on('top5',list=>{if(!list||list.length===0){top5Box.style.display='none';return;}top5Box.style.display='block';let msg=`TOP 5 MAIS SEGUROS:\n`;list.forEach((p,i)=>{const prob=p.probFechamento?p.probFechamento.probabilidadeTexto:`${p.fechamentos} ordens`;msg+=`${i+1}. ${p.symbol} ${p.nomePadrao} ${p.score}% ${p.grids}G Lev ${p.levIdeal}x ${p.duracao_estimada} - ${prob}\n`;});top5Box.textContent=msg;});
+searchPremium.addEventListener('input',renderPremium);
+document.getElementById('btnScan').onclick=()=>{if(scanning){socket.emit('stop_all');return;}socket.emit('start_scan');possiveisDiv.innerHTML='';addLog({msg:'Iniciando scan V16',type:'scan',time:new Date().toLocaleTimeString('pt-BR')});};
+document.getElementById('btnStop').onclick=()=>{socket.emit('stop_all');};
+document.getElementById('btnTop5').onclick=()=>{socket.emit('pedir_top5');};
+document.getElementById('btnConfirmar').onclick=()=>{const checks=document.querySelectorAll('.premium-check:checked');const list=[...new Set([...checks].map(c=>c.value))];if(list.length===0){alert('Marque 1 par!');return;}socket.emit('confirmar_entrada',list);addLog({msg:`Confirmando ${list.length} pares`,type:'prime',time:new Date().toLocaleTimeString('pt-BR')});checks.forEach(c=>c.checked=false);};
+function remover(sym){socket.emit('remover_entrada',sym);}
+</script>
+</body>
+</html>

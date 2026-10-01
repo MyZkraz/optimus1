@@ -1,0 +1,13 @@
+{
+  "version": "17.0.0",
+  "base": "OPTIMUS-GRID-V16-CONFIG-LIMPA",
+  "changes": [
+    "Premium vivo",
+    "SQLite local via node:sqlite",
+    "cursor incremental",
+    "margens adaptativas topo/fundo",
+    "detector de comportamento real",
+    "frontend sync de Premium"
+  ],
+  "preserved_backup": "backup_v16/"
+}
